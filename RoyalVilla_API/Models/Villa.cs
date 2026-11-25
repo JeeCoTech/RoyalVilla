@@ -20,6 +20,6 @@ namespace RoyalVilla_API.Models
 
         public DateTime? UpdatedDate { get; set; }
 
-       
+        public ICollection<VillaAmenities?> Amenities { get; set; }
     }
 }
