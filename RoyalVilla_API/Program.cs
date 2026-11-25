@@ -2,10 +2,10 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi;
-using RoyalVilla_API.Data;
-using RoyalVilla_API.DTO;
-using RoyalVilla_API.Models;
-using RoyalVilla_API.Services;
+using RoyalVilla.API.Data;
+using RoyalVilla.DTO;
+using RoyalVilla.API.Models;
+using RoyalVilla.API.Services;
 using Scalar.AspNetCore;
 using System.Text;
 

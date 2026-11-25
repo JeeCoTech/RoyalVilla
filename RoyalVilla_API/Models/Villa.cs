@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 
-namespace RoyalVilla_API.Models
+namespace RoyalVilla.API.Models
 {
     public class Villa
     {

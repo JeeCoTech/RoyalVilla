@@ -4,11 +4,11 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using RoyalVilla_API.Data;
+using RoyalVilla.API.Data;
 
 #nullable disable
 
-namespace RoyalVilla_API.Migrations
+namespace RoyalVilla.API.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
     partial class ApplicationDbContextModelSnapshot : ModelSnapshot
@@ -22,7 +22,7 @@ namespace RoyalVilla_API.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("RoyalVilla_API.Models.User", b =>
+            modelBuilder.Entity("RoyalVilla.API.Models.User", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -59,7 +59,7 @@ namespace RoyalVilla_API.Migrations
                     b.ToTable("User");
                 });
 
-            modelBuilder.Entity("RoyalVilla_API.Models.Villa", b =>
+            modelBuilder.Entity("RoyalVilla.API.Models.Villa", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -160,7 +160,7 @@ namespace RoyalVilla_API.Migrations
                         });
                 });
 
-            modelBuilder.Entity("RoyalVilla_API.Models.VillaAmenities", b =>
+            modelBuilder.Entity("RoyalVilla.API.Models.VillaAmenities", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -192,9 +192,9 @@ namespace RoyalVilla_API.Migrations
                     b.ToTable("VillaAmenities");
                 });
 
-            modelBuilder.Entity("RoyalVilla_API.Models.VillaAmenities", b =>
+            modelBuilder.Entity("RoyalVilla.API.Models.VillaAmenities", b =>
                 {
-                    b.HasOne("RoyalVilla_API.Models.Villa", "Villa")
+                    b.HasOne("RoyalVilla.API.Models.Villa", "Villa")
                         .WithMany("Amenities")
                         .HasForeignKey("VillaId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -203,7 +203,7 @@ namespace RoyalVilla_API.Migrations
                     b.Navigation("Villa");
                 });
 
-            modelBuilder.Entity("RoyalVilla_API.Models.Villa", b =>
+            modelBuilder.Entity("RoyalVilla.API.Models.Villa", b =>
                 {
                     b.Navigation("Amenities");
                 });

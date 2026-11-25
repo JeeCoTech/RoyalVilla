@@ -2,13 +2,13 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using RoyalVilla_API.Data;
-using RoyalVilla_API.DTO;
-using RoyalVilla_API.Models;
+using RoyalVilla.API.Data;
+using RoyalVilla.DTO;
+using RoyalVilla.API.Models;
 using System.Collections;
 using System.ComponentModel;
 
-namespace RoyalVilla_API.Controllers
+namespace RoyalVilla.API.Controllers
 {
     [Route("api/villa")]
     [ApiController]

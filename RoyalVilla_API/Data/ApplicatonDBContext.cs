@@ -1,8 +1,8 @@
 ﻿
 using Microsoft.EntityFrameworkCore;
-using RoyalVilla_API.Models;
+using RoyalVilla.API.Models;
 
-namespace RoyalVilla_API.Data
+namespace RoyalVilla.API.Data
 {
     public class ApplicationDbContext(DbContextOptions options) : DbContext(options)
     {

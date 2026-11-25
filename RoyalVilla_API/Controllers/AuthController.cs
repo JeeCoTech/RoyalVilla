@@ -1,11 +1,11 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using RoyalVilla_API.Data;
-using RoyalVilla_API.DTO;
-using RoyalVilla_API.Services;
+using RoyalVilla.API.Data;
+using RoyalVilla.DTO;
+using RoyalVilla.API.Services;
 
-namespace RoyalVilla_API.Controllers
+namespace RoyalVilla.API.Controllers
 {
     [Route("api/auth")]
     [ApiController]

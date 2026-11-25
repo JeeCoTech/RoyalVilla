@@ -1,14 +1,14 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using RoyalVilla_API.Data;
-using RoyalVilla_API.DTO;
-using RoyalVilla_API.Models;
+using RoyalVilla.API.Data;
+using RoyalVilla.DTO;
+using RoyalVilla.API.Models;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 
-namespace RoyalVilla_API.Services
+namespace RoyalVilla.API.Services
 {
     public class AuthService : IAuthService
     {
