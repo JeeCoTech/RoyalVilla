@@ -23,7 +23,7 @@ namespace RoyalVilla.API.Data
                      Rate = 500.0,
                      Sqft = 2500,
                      Occupancy = 6,
-                     ImageUrl = "https://dotnetmasteryimages.blob.core.windows.net/bluevillaimages/villa1.jpg",
+                     ImageUrl = "https://test/bluevillaimages/villa1.jpg",
                      CreatedDate = new DateTime(2024, 1, 1),
                      UpdatedDate = new DateTime(2024, 1, 1)
                  },
@@ -35,7 +35,7 @@ namespace RoyalVilla.API.Data
                     Rate = 750.0,
                     Sqft = 3200,
                     Occupancy = 8,
-                    ImageUrl = "https://dotnetmasteryimages.blob.core.windows.net/bluevillaimages/villa2.jpg",
+                    ImageUrl = "https://test/bluevillaimages/villa2.jpg",
                     CreatedDate = new DateTime(2024, 1, 15),
                     UpdatedDate = new DateTime(2024, 1, 15)
                 },
@@ -47,7 +47,7 @@ namespace RoyalVilla.API.Data
                     Rate = 350.0,
                     Sqft = 1800,
                     Occupancy = 4,
-                    ImageUrl = "https://dotnetmasteryimages.blob.core.windows.net/bluevillaimages/villa3.jpg",
+                    ImageUrl = "https://test/bluevillaimages/villa3.jpg",
                     CreatedDate = new DateTime(2024, 2, 1),
                     UpdatedDate = new DateTime(2024, 2, 1)
                 },
@@ -59,7 +59,7 @@ namespace RoyalVilla.API.Data
                     Rate = 900.0,
                     Sqft = 4000,
                     Occupancy = 10,
-                    ImageUrl = "https://dotnetmasteryimages.blob.core.windows.net/bluevillaimages/villa4.jpg",
+                    ImageUrl = "https://test/bluevillaimages/villa4.jpg",
                     CreatedDate = new DateTime(2024, 2, 14),
                     UpdatedDate = new DateTime(2024, 2, 14)
                 },
@@ -71,7 +71,7 @@ namespace RoyalVilla.API.Data
                     Rate = 275.0,
                     Sqft = 1500,
                     Occupancy = 3,
-                    ImageUrl = "https://dotnetmasteryimages.blob.core.windows.net/bluevillaimages/villa5.jpg",
+                    ImageUrl = "https://test/bluevillaimages/villa5.jpg",
                     CreatedDate = new DateTime(2024, 3, 1),
                     UpdatedDate = new DateTime(2024, 3, 1)
                 });
