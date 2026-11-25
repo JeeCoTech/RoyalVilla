@@ -32,7 +32,7 @@ namespace RoyalVillaMVC.Controllers
             {
                 TempData["error"] = $"An error occurred: {e.Message}";
             }
-            return View();
+            return View(villaList);
         }
 
         public IActionResult Privacy()
