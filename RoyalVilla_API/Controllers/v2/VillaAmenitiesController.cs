@@ -8,17 +8,18 @@ using RoyalVilla.API.Models;
 using System.Collections;
 using System.ComponentModel;
 
-namespace RoyalVilla.API.Controllers
+namespace RoyalVilla.API.Controllers.v2
 {
-    [Route("api/villa-amenities")]
+    [Route("api/v{version:apiVersion}/villa-amenitie")]
+    [ApiVersion("2.0")]
     [ApiController]
-    //[Authorize (Roles = "Customer, Admin")]
-    public class VillaAmenitiesController : ControllerBase
+    //[Authorize(Roles = "Customer,Admin")]
+    public class VillaAmentiesController : ControllerBase
     {
         private readonly ApplicationDbContext _db;
         private readonly IMapper _mapper;
 
-        public VillaAmenitiesController(ApplicationDbContext db, IMapper mapper)
+        public VillaAmentiesController(ApplicationDbContext db, IMapper mapper)
         {
             _db = db;
             _mapper = mapper;
@@ -70,7 +71,7 @@ namespace RoyalVilla.API.Controllers
         [ProducesResponseType(typeof(APIResponse<object>), StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(typeof(APIResponse<object>), StatusCodes.Status409Conflict)]
         [ProducesResponseType(typeof(APIResponse<object>), StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<APIResponse<VillaAmenitiesDTO>>> CreateVillaAmenities(VillaAmenitiesCreateDTO villaAmentiesDTO)
+        public async Task<ActionResult<APIResponse<VillaAmenitiesDTO>>> CreateVillaAmenities(VillaAmenitiesUpdateDTO villaAmentiesDTO)
         {
             try
             {
@@ -183,5 +184,6 @@ namespace RoyalVilla.API.Controllers
                 return StatusCode(500, errorResponse);
             }
         }
+
     }
-    }
+}

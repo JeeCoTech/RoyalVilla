@@ -16,7 +16,7 @@ namespace RoyalVilla.DTO
         public required string Password { get; set; }
 
         [MaxLength(50)]
-        public required string Role { get; set; } = "Customer";
+        public string Role { get; set; } = "Customer";
 
     }
 }

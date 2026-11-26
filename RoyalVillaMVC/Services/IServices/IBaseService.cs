@@ -1,4 +1,5 @@
-﻿using RoyalVilla.DTO;
+﻿using AutoMapper.Internal;
+using RoyalVilla.DTO;
 using RoyalVilla.Web.Models;
 
 namespace RoyalVilla.Web.Services.IServices
@@ -6,6 +7,6 @@ namespace RoyalVilla.Web.Services.IServices
     public interface IBaseService
     {
         APIResponse<object> ResponseModel { get; set; }
-        Task<T> SendAsync<T>(APIRequest apiRequest);
+        Task<T> SendAsync<T>(APIRequest apiRequest, bool withBearer = true);
     }
 }

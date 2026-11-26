@@ -1,24 +1,33 @@
+using Asp.Versioning;
+using Asp.Versioning.ApiExplorer;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Diagnostics;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi;
-using RoyalVilla.API.Data;
 using RoyalVilla.DTO;
+using RoyalVilla.API.Data;
 using RoyalVilla.API.Models;
 using RoyalVilla.API.Services;
+using RoyalVilla.API.Services.IServices;
 using Scalar.AspNetCore;
+using System.Security.Claims;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 var key = Encoding.ASCII.GetBytes(builder.Configuration.GetSection("JwtSettings")["Secret"]);
 
-builder.Services.AddAuthentication(options =>
+builder.Services.AddIdentity<ApplicationUser, IdentityRole>().AddEntityFrameworkStores<ApplicationDbContext>();
+builder.Services.AddAuthentication(option =>
 {
-    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-    options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+    option.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    option.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+    option.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
 }).AddJwtBearer(options =>
-{ 
+{
     options.RequireHttpsMetadata = false;
     options.SaveToken = true;
     options.TokenValidationParameters = new TokenValidationParameters
@@ -28,50 +37,89 @@ builder.Services.AddAuthentication(options =>
         ValidateIssuer = false,
         ValidateAudience = false,
         ValidateLifetime = true,
-        ClockSkew = TimeSpan.Zero
+        ClockSkew = TimeSpan.Zero,
+        NameClaimType = ClaimTypes.Name,
+        RoleClaimType = ClaimTypes.Role,
     };
+
 });
 
+builder.Services.AddScoped<IImageService, ImageService>();
+builder.Services.AddScoped<ITokenService, TokenService>();
+builder.Services.AddApiVersioning(options =>
+{
+    options.AssumeDefaultVersionWhenUnspecified = true;
+    options.DefaultApiVersion = new ApiVersion(1, 0);
+    options.ReportApiVersions = true;
+}).AddApiExplorer(option =>
+{
+    option.GroupNameFormat = "'v'VVV";
+    option.SubstituteApiVersionInUrl = true;
+});
+builder.Services.AddCors();
 // Add services to the container.
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
+builder.Services.AddDbContext<ApplicationDbContext>(option =>
 {
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+    option.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
+        .ConfigureWarnings(warnings =>
+            warnings.Ignore(RelationalEventId.PendingModelChangesWarning));
 });
+builder.Services.AddControllers();
 
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-builder.Services.AddOpenApi(options =>
+
+
+var builderProvider = builder.Services.BuildServiceProvider().GetRequiredService<IApiVersionDescriptionProvider>();
+foreach (var description in builderProvider.ApiVersionDescriptions)
 {
-    options.AddDocumentTransformer((document, context, cancellationToken) =>
+    var versionName = description.GroupName;
+    var versionNumber = description.ApiVersion.ToString();
+    var displayName = $"Demo API -- {versionNumber}";
+
+    builder.Services.AddOpenApi(versionName, options =>
     {
-        document.Components ??= new();
-        document.Components.SecuritySchemes = new Dictionary<string, IOpenApiSecurityScheme>
+        options.AddDocumentTransformer((document, context, cancellationToken) =>
         {
-            ["Bearer"] = new OpenApiSecurityScheme
+            document.Info = new OpenApiInfo
             {
-                Type = SecuritySchemeType.Http,
-                Scheme = "bearer",
-                BearerFormat = "JWT",
-                Description = "Enter JWT Bearer token"
+                Title = "Demo Royal API",
+                Version = versionName,
+                Description = displayName,
+                Contact = new OpenApiContact
+                {
+                    Name = "Jeeson Colaco",
+                    Email = "test@test.com"
+                }
+            };
 
-            }
-        };
+            document.Components ??= new();
+            document.Components.SecuritySchemes = new Dictionary<string, IOpenApiSecurityScheme>
+            {
+                ["Bearer"] = new OpenApiSecurityScheme
+                {
+                    Type = SecuritySchemeType.Http,
+                    Scheme = "bearer",
+                    BearerFormat = "JWT",
+                    Description = "Enter JWT Bearer token"
+                }
+            };
 
-        document.Security =
-        [
-            new OpenApiSecurityRequirement
+            document.Security =
+            [
+                new OpenApiSecurityRequirement
             {
                 { new OpenApiSecuritySchemeReference("Bearer"), new List<string>() }
             }
-        ];
+            ];
 
-        return Task.CompletedTask;
+            return Task.CompletedTask;
+        });
     });
-});
+
+}
 
 
-builder.Services.AddAuthorization();
 
-builder.Services.AddControllers();
+
 
 builder.Services.AddAutoMapper(o =>
 {
@@ -79,30 +127,49 @@ builder.Services.AddAutoMapper(o =>
     o.CreateMap<Villa, VillaUpdateDTO>().ReverseMap();
     o.CreateMap<Villa, VillaDTO>().ReverseMap();
     o.CreateMap<VillaUpdateDTO, VillaDTO>().ReverseMap();
-    o.CreateMap<User, UserDTO>().ReverseMap();
-    o.CreateMap<VillaAmenities, VillaAmenitiesDTO>()
-    .ForMember(dest => dest.VillaName, opt => opt.MapFrom(src => src.Villa != null ? src.Villa.Name : null));
+    o.CreateMap<ApplicationUser, UserDTO>().ReverseMap();
     o.CreateMap<VillaAmenities, VillaAmenitiesCreateDTO>().ReverseMap();
     o.CreateMap<VillaAmenities, VillaAmenitiesUpdateDTO>().ReverseMap();
-    o.CreateMap<VillaAmenitiesDTO, VillaAmenities>().ReverseMap();
+    o.CreateMap<VillaAmenities, VillaAmenitiesDTO>()
+    .ForMember(dest => dest.VillaName, opt => opt.MapFrom(src => src.Villa != null ? src.Villa.Name : null));
+    o.CreateMap<VillaAmenitiesDTO, VillaAmenities>();
 });
 
 builder.Services.AddScoped<IAuthService, AuthService>();
 
+
 var app = builder.Build();
-
 await SeedDataAsync(app);
-
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+
+app.MapOpenApi("/openapi/{documentName}.json");
+var provider = app.Services.GetRequiredService<IApiVersionDescriptionProvider>();
+
+app.MapScalarApiReference(option =>
 {
-    app.MapOpenApi();
-    app.MapScalarApiReference();
-}
+    option.Title = "Demo - Royal Villa API";
 
-app.UseCors(o => o.AllowAnyOrigin().AllowAnyMethod().WithExposedHeaders("x"));
+    var sortedVersion = provider.ApiVersionDescriptions.OrderBy(v => v.ApiVersion).ToList();
+
+    foreach (var description in sortedVersion)
+    {
+        var versionName = description.GroupName;
+        var versionNumber = description.ApiVersion.ToString();
+        var displayName = $"Demo API -- {versionNumber}";
+
+        var isDefault = description.ApiVersion.Equals(new ApiVersion(2, 0));
+        option.AddDocument(versionName, displayName, $"/openapi/{versionName}.json", isDefault);
+    }
+
+
+});
+
+app.MapGet("/", () => Results.Redirect("/scalar")).ExcludeFromDescription();
+
+
+app.UseStaticFiles();
+app.UseCors(o => o.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod().WithExposedHeaders("*"));
 app.UseHttpsRedirection();
-
 app.UseAuthentication();
 app.UseAuthorization();
 
@@ -110,9 +177,11 @@ app.MapControllers();
 
 app.Run();
 
+
 static async Task SeedDataAsync(WebApplication app)
 {
     using var scope = app.Services.CreateScope();
     var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+
     await context.Database.MigrateAsync();
 }

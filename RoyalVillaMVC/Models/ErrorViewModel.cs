@@ -1,4 +1,4 @@
-namespace RoyalVillaMVC.Models
+namespace RoyalVillaWeb.Models
 {
     public class ErrorViewModel
     {

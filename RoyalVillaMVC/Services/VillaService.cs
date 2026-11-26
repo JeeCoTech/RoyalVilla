@@ -1,62 +1,70 @@
-﻿using RoyalVilla.DTO;
+﻿using AutoMapper.Internal;
+using RoyalVilla.DTO;
+using RoyalVilla.Web.Extensions;
 using RoyalVilla.Web.Models;
 using RoyalVilla.Web.Services.IServices;
+using RoyalVillaWeb.Models;
+using RoyalVillaWeb.Services.IServices;
 
 namespace RoyalVilla.Web.Services
 {
     public class VillaService: BaseService, IVillaService
     {
-        private readonly IHttpClientFactory _clientFactory;
-        private const string APIEndpoint = "/api/villa";
-        public VillaService(IHttpClientFactory clientFactory, IConfiguration configuration) : base(clientFactory)
+        private const string APIEndpoint = $"/api/{SD.CurrentAPIVersion}/villa";
+        public VillaService(IHttpClientFactory httpClient, IHttpContextAccessor httpContextAccessor,
+            IConfiguration configuration, ITokenProvider tokenProvider)
+            : base(httpClient, tokenProvider, httpContextAccessor)
         {
-            _clientFactory = clientFactory;
         }
-        public async Task<T?> CreateAsync<T>(VillaCreateDTO dto, string token)
+
+        public Task<T?> CreateAsync<T>(VillaCreateDTO dto)
         {
-            return await SendAsync<T>(new APIRequest()
+
+            var formData = dto.ToMultipartFormData();
+            return SendAsync<T>(new APIRequest
             {
-                APIType = SD.APIType.POST,
-                Url = $"{APIEndpoint}",
-                Data = dto,
-                Token = token
+                ApiType = SD.APIType.POST,
+                Data = formData,
+                Url = APIEndpoint
             });
         }
-        public async Task<T?> DeleteAsync<T>(int id, string token)
+
+        public Task<T?> DeleteAsync<T>(int id)
         {
-            return await SendAsync<T>(new APIRequest()
+            return SendAsync<T>(new APIRequest
             {
-                APIType = SD.APIType.DELETE,
-                Url = $"{APIEndpoint}/{id}",
-                Token = token
+                ApiType = SD.APIType.DELETE,
+                Url = $"{APIEndpoint}/{id}"
             });
         }
-        public async Task<T?> GetAllAsync<T>(string token)
+
+        public Task<T?> GetAllAsync<T>()
         {
-            return await SendAsync<T>(new APIRequest()
+            return SendAsync<T>(new APIRequest
             {
-                APIType = SD.APIType.GET,
-                Url = $"{APIEndpoint}",
-                Token = token
+                ApiType = SD.APIType.GET,
+                Url = $"{APIEndpoint}"
             });
         }
-        public async Task<T?> GetAsync<T>(int id, string token)
+
+        public Task<T?> GetAsync<T>(int id)
         {
-            return await SendAsync<T>(new APIRequest()
+            return SendAsync<T>(new APIRequest
             {
-                APIType = SD.APIType.GET,
-                Url = $"{APIEndpoint}/{id}",
-                Token = token
+                ApiType = SD.APIType.GET,
+
+                Url = $"{APIEndpoint}/{id}"
             });
         }
-        public async Task<T?> UpdateAsync<T>(VillaUpdateDTO dto, string token)
+
+        public Task<T?> UpdateAsync<T>(VillaUpdateDTO dto)
         {
-            return await SendAsync<T>(new APIRequest()
+            var formData = dto.ToMultipartFormData();
+            return SendAsync<T>(new APIRequest
             {
-                APIType = SD.APIType.PUT,
-                Url = $"{APIEndpoint}/{dto.Id}",
-                Data = dto,
-                Token = token
+                ApiType = SD.APIType.PUT,
+                Data = formData,
+                Url = $"{APIEndpoint}/{dto.Id}"
             });
         }
     }

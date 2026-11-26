@@ -10,6 +10,11 @@
             DELETE
         }
 
+        public const string SessionAccessToken = "JWTToken";
+        public const string SessionRefreshToken = "RefreshToken";
+        public const string CurrentAPIVersion = "v2";
+        public static string APIBaseUrl { get; set; }
+
         public static string GetImageUrl(string? imageUrl)
         {
             if (string.IsNullOrEmpty(imageUrl))

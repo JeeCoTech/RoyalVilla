@@ -1,15 +1,18 @@
 ﻿
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using RoyalVilla.API.Models;
 
 namespace RoyalVilla.API.Data
 {
-    public class ApplicationDbContext(DbContextOptions options) : DbContext(options)
+    public class ApplicationDbContext(DbContextOptions options) : IdentityDbContext(options)
     {
         public DbSet<Villa> Villa { get; set; }
-        public DbSet<User> User { get; set; }
-
+        public DbSet<User> Users { get; set; }
         public DbSet<VillaAmenities> VillaAmenities { get; set; }
+        public DbSet<ApplicationUser> ApplicationUsers { get; set; }
+
+        public DbSet<RefreshToken> RefreshTokens { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
